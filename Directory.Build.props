@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <Company>WIM Studio</Company>
+    <Authors>WIM Studio Contributors</Authors>
+    <Copyright>Copyright © 2026</Copyright>
+    <NeutralLanguage>de-DE</NeutralLanguage>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+  </PropertyGroup>
+</Project>
