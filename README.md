@@ -2,8 +2,6 @@
 
 A WPF application (.NET 8) for creating and managing custom Windows Imaging Format (WIM) files.
 
-> **Note on spelling:** The display name is *WIM Studio* (with a space). In identifiers (namespace, assembly, project name, file paths), `WimStudio` is used without a space, as this is the standard convention in .NET.
-
 ## Features
 
 - **Capture Image**: Create a new WIM file from a directory
