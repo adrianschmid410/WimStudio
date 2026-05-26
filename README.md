@@ -1,115 +1,35 @@
 # WIM Studio
 
-Ein WPF-Programm (.NET 8) zur Erstellung und Verwaltung benutzerdefinierter Windows Imaging Format (WIM) Dateien.
+A WPF application (.NET 8) for creating and managing custom Windows Imaging Format (WIM) files.
 
-> **Hinweis zur Schreibweise:** Der Anzeigename ist *WIM Studio* (mit Leerzeichen). In Bezeichnern (Namespace, Assembly, Projektname, Dateipfade) wird `WimStudio` ohne Leerzeichen verwendet, weil das in .NET die übliche Konvention ist.
+> **Note on spelling:** The display name is *WIM Studio* (with a space). In identifiers (namespace, assembly, project name, file paths), `WimStudio` is used without a space, as this is the standard convention in .NET.
 
-## Funktionen
+## Features
 
-- **Capture Image**: Neue WIM-Datei aus einem Verzeichnis erstellen
-- **Append Image**: Weiteres Image an eine bestehende WIM anhängen
-- **Get Image Info**: Alle Images in einer WIM-Datei auflisten
-- **Delete Image**: Image-Index aus WIM entfernen
-- **Export Image**: Einzelnes Image in neue WIM exportieren (effektive Größenreduzierung)
-- **Mount/Unmount**: WIM-Image zur Offline-Bearbeitung einhängen
-- Auswahl der Kompressionsstufe (None / Fast / Maximum / Recovery)
-- Verifizierung und Bootable-Flag konfigurierbar
-- Live-Ausgabe und Fortschrittsanzeige
+- **Capture Image**: Create a new WIM file from a directory
+- **Append Image**: Append another image to an existing WIM
+- **Get Image Info**: List all images in a WIM file
+- **Delete Image**: Remove an image from the WIM
+- **Export Image**: Export a single image to a new WIM (effective size reduction)
+- **Mount/Unmount**: Mount WIM image for offline editing
+- Select compression level (None / Fast / Maximum / Recovery)
+- Verification and bootable flag configurable
+- Live output and progress indicator
 
-## Voraussetzungen
+## Requirements
 
-- **Windows 10 oder Windows 11** (DISM ist Bestandteil von Windows)
-- **.NET 8 SDK** zum Bauen
-- **Administratorrechte** zur Laufzeit (im Manifest erzwungen)
+- **Windows** (DISM is part of Windows)
+- **.NET 8 SDK** for building
+- **Administrator rights** at runtime (enforced in the manifest)
 
-## Projektmappenstruktur
+## Notes on Creating WIM Files
 
-```
-WimStudio/
-├── WimStudio.sln              # Solution-Datei
-├── Directory.Build.props      # Solutionweite Eigenschaften
-├── NuGet.config               # NuGet-Quellen
-├── .editorconfig              # Code-Formatierung
-├── .gitignore
-├── build.cmd                  # Build-Skript
-├── README.md
-└── WimStudio/                 # Hauptprojekt
-    ├── WimStudio.csproj
-    ├── app.manifest           # UAC-Manifest
-    ├── App.xaml / .xaml.cs
-    ├── AssemblyInfo.cs
-    ├── Models/
-    │   ├── WimImageInfo.cs
-    │   └── WimCompressionType.cs
-    ├── Services/
-    │   └── DismService.cs     # DISM-Kapselung
-    ├── ViewModels/
-    │   └── MainViewModel.cs
-    ├── Views/
-    │   ├── MainWindow.xaml
-    │   └── MainWindow.xaml.cs
-    └── Helpers/
-        ├── AdminHelper.cs
-        └── InverseBooleanConverter.cs
-```
+1. The **source directory** is the root path of the contents (e.g., a mounted Windows Image drive such as `D:\`).
+2. The **Bootable** option marks the WIM for WinPE/Recovery—this is only useful for bootable sources.
+3. **Maximum** compression is significantly slower than **Fast**, but results in files that are about 30% smaller.
+4. After `Delete-Image`, the file size remains unchanged. Only `Export-Image` to a new WIM frees up the storage space.
 
-## Bauen und Starten
+## Security
 
-### Mit Visual Studio 2022
-
-`WimStudio.sln` öffnen, F5 drücken. Visual Studio startet die UAC-Eingabeaufforderung dank Manifest automatisch.
-
-### Mit dotnet CLI
-
-```powershell
-cd WimStudio
-dotnet restore
-dotnet build -c Release
-dotnet run --project WimStudio\WimStudio.csproj -c Release
-```
-
-### Single-File-Veröffentlichung
-
-```powershell
-.\build.cmd
-```
-
-Das Skript erzeugt `publish\win-x64\WimStudio.exe` (≈ 150 KB, benötigt installiertes .NET 8 Runtime).
-
-## Technische Details
-
-Die Anwendung ruft die in Windows vorhandene `Dism.exe` aus `%SystemRoot%\System32` auf
-und parst deren Ausgabe. Folgende DISM-Befehle werden verwendet:
-
-| Aktion        | DISM-Befehl       |
-|---------------|-------------------|
-| Capture       | `/Capture-Image`  |
-| Append        | `/Append-Image`   |
-| Get Info      | `/Get-ImageInfo`  |
-| Delete        | `/Delete-Image`   |
-| Export        | `/Export-Image`   |
-| Mount         | `/Mount-Image`    |
-| Unmount       | `/Unmount-Image`  |
-
-## Architektur
-
-- **MVVM-Pattern** mit `CommunityToolkit.Mvvm` (Source Generators für `[ObservableProperty]` und `[RelayCommand]`)
-- **DismService**: Kapselt alle `Dism.exe`-Aufrufe asynchron mit `Process` und liefert Fortschritt + Ausgabe per Event
-- **MainViewModel**: UI-State, Befehle, Validierung
-- **Views/MainWindow.xaml**: Reine deklarative Oberfläche mit DataBinding
-
-## Hinweise zur WIM-Erstellung
-
-1. Das **Quellverzeichnis** ist der Wurzelpfad der Inhalte (z.B. ein eingebundenes Windows-Image-Laufwerk wie `D:\`).
-2. Mit der Option **Bootable** wird die WIM für WinPE/Recovery markiert — nur sinnvoll bei bootfähigen Quellen.
-3. **Maximum**-Kompression ist deutlich langsamer als **Fast**, ergibt aber rund 30 % kleinere Dateien.
-4. Nach `Delete-Image` bleibt die Dateigröße unverändert. Erst `Export-Image` in eine neue WIM gibt den Speicher frei.
-
-## Sicherheit
-
-WIM-Operationen schreiben in Systemverzeichnisse und benötigen Administratorrechte.
-Die App fordert diese über das Manifest automatisch an. Wird sie ohne UAC-Erhöhung gestartet, erscheint eine Warnung im Fenster.
-
-## Lizenz
-
-Frei verwendbar — passe das nach deinen Bedürfnissen an.
+WIM operations write to system directories and require administrator privileges.
+The app automatically requests these via the manifest. If it is launched without UAC elevation, a warning appears in the window.
