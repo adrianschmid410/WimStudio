@@ -22,7 +22,7 @@ A WPF application (.NET 8) for creating and managing custom Windows Imaging Form
 
 ## Languages
 
-Currently, WimStudio is only available in **German**. English and other languages might be added in future Versions.
+Currently, WimStudio is only available in **German**. English and other languages might be added in future versions.
 
 ## Notes on Creating WIM Files
 
