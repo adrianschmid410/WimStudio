@@ -20,6 +20,10 @@ A WPF application (.NET 8) for creating and managing custom Windows Imaging Form
 - **.NET 8 SDK** for building
 - **Administrator rights** at runtime (enforced in the manifest)
 
+## Languages
+
+Currently, WimStudio is only available in **German**. English and other languages might be added in future Versions.
+
 ## Notes on Creating WIM Files
 
 1. The **source directory** is the root path of the contents (e.g., a mounted Windows Image drive such as `D:\`).
